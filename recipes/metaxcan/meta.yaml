@@ -1,0 +1,69 @@
+# Note: there are many handy hints in comments in this example -- remove them when you've finalized your recipe
+# If your package is python based, we recommend using Grayskull to generate it instead:
+# https://github.com/conda-incubator/grayskull
+
+# Jinja variables help maintain the recipe as you'll update the version only here.
+# Using the name variable with the URL in line 16 is convenient
+# when copying and pasting from another recipe, but not really needed.
+{% set name = "metaxcan" %}
+{% set version = "4b3ad958d4932365ee5f58f70eaf002187870b15" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/hakyimlab/MetaXcan/archive/{{ version }}.tar.gz
+  sha256: 421a8a5a8b9365bd73d0a9338ac91add66a932f24fa5fda42fabaf6618c443e5
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install software -vv
+  skip: True  # [py<36]
+  number: 0
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - scipy >=1.2.2
+    - numpy >=1.14.2 <1.20.0
+    - pandas >=0.22.0
+    - patsy >=0.5.0
+    - statsmodels >=0.10.0
+    - h5py >=2.7.1
+    - h5py-cache >=1.0
+    - bgen_reader >=3.0
+    - cyvcf2 >=0.8.0
+    - mock # for tests
+    - sqlalchemy # for tests
+  run:
+    - python
+    - scipy >=1.2.2 # removed requiement <1.3
+    - numpy >=1.14.2 <1.20.0
+    - pandas >=0.22.0
+    - patsy >=0.5.0
+    - statsmodels >=0.10.0
+    - h5py >=2.7.1
+    - h5py-cache >=1.0
+    - bgen_reader >=3.0
+    - cyvcf2 >=0.8.0
+test:
+  commands:
+    - pushd software && python -m unittest && popd
+
+about:
+  home: https://www.alglib.net/
+  summary: 'A cross-platform numerical analysis and data processing library'
+  description: |
+    ALGLIB is a cross-platform numerical analysis and data processing library. It supports five programming languages 
+    (C++, C#, Java, Python, Delphi) and several operating systems (Windows and POSIX, including Linux).
+
+  license: GPL-2.0-or-later
+  license_family: GPL
+  license_file: gpl2.txt
+
+extra:
+  recipe-maintainers:
+    - pettyalex
